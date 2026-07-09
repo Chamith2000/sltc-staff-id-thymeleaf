@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/print-id-front.css}">
+    <title>Staff ID Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="id-card-container">
+    <div th:each="employee : ${employees.content}">
+        <!-- FRONT SIDE -->
+        <div class="id-card">
+            <div class="yellow-line"></div>
+            <div class="header">
+                <div class="logo">
+                    <img src="/images/SLTC LOGO Learn Research Transform NE 2025.07.18.png" alt="Institute Logo"/>
+                </div>
+                <h2 style="font-family: 'MuseoSans', sans-serif; font-size: 15pt; font-weight: 900;">STAFF</h2>
+            </div>
+            <div class="content">
+                <div class="watermark"></div>
+                <div class="photo">
+                    <img th:src="${employee.filePath} ?: '/images/staff-id/default-avatar.jpg'" alt="Staff Photo">
+                </div>
+                <div class="details">
+                    <h2 th:text="${employee.printedName}"
+                        style="max-width: 175px; font-family: 'MuseoSans', sans-serif; font-size: 11pt; font-weight: 900;"
+                    >Name</h2>
+
+                    <p style="max-width: 175px; font-family: 'MuseoSans', sans-serif; font-size: 5pt; font-weight: 700;">
+                        Designation :
+                        <span th:text="${employee.designation}"></span>
+                    </p>
+                    <p class="line-break"></p>
+                    <p style="max-width: 175px; font-family: 'MuseoSans', sans-serif; font-size: 5pt; font-weight: 500;">
+                        Department : <span th:text="${employee.departmentDisplayName}"></span></p>
+                    <p class="line-break"></p>
+                    <p style="max-width: 175px; font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">
+                        Employee No : <span th:text="${employee.empNo}"></span></p>
+                    <p class="line-break"></p>
+                </div>
+            </div>
+            <div class="bottom-section">
+                <div style="margin-bottom: 9px">
+                    <p style="font-family: 'MuseoSans', sans-serif; font-size: 5pt; font-weight: 500;">Sri Lanka
+                        Technology Campus</p>
+                    <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 300;">Issue Date: <span
+                            th:text="${#dates.format(employee.issueDate, 'dd/MM/yyyy')}"></span></p>
+                </div>
+                <div class="yellow-line"></div>
+            </div>
+        </div>
+        <!-- BACK SIDE -->
+        <div class="id-card back">
+            <div class="yellow-line"></div>
+            <div class="header back-header">
+                <div class="back-logo-row">
+                    <img src="/images/SLTC LOGO Learn Research Transform NE 2025.07.18.png" alt="Institute Logo"/>
+                </div>
+                <div class="campus-columns">
+                    <div class="campus-col">
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 900;">Sri Lanka Technology Campus (Pvt) Ltd</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 900;">Main Campus</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">SLTC, Ingiriya Road,</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">Padukka.</p>
+                    </div>
+                    <div class="campus-col">
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 900;">SLTC Innovation and Industry Collaboration Hub</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">Bay 10,</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">Trace Expert City,</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">Colombo 10,</p>
+                        <p style="font-family: 'MuseoSans', sans-serif; font-size: 4pt; font-weight: 500;">Sri Lanka</p>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="watermark"></div>
+                <div class="qr-code" style="margin-top: 19px;">
+                    <img th:if="${employee.getQrBase64()}"
+                         th:src="'data:image/png;base64,' + ${employee.getQrBase64()}"
+                         alt="Student QR Code">
+                </div>
+            </div>
+            <div class="t-and-c">
+                <p style="font-family: 'MuseoSans', sans-serif; font-size: 6pt; font-weight: 700;">Terms and Conditions:</p>
+                <p style="font-family: 'MuseoSans', sans-serif; font-size: 5pt; font-weight: 500;">This ID card is the property of SLTC. It must be returned to SLTC upon resignation, termination of
+                    employment, or completion of the contract period.</p>
+            </div>
+            <div class="contact-info">
+                <p style="font-family: 'MuseoSans', sans-serif; font-size: 3.6616pt; font-weight: 500;"><i class="fas fa-envelope"></i> hr@sltc.ac.lk</p>
+                <p style="font-family: 'MuseoSans', sans-serif; font-size: 3.6616pt; font-weight: 500;"><i class="fas fa-globe"></i> <strong>www.sltc.ac.lk</strong></p>
+                <p style="font-family: 'MuseoSans', sans-serif; font-size: 3.6616pt; font-weight: 500;"><i class="fas fa-phone"></i> (+94) 117 999 000</p>
+            </div>
+            <div class="yellow-line"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

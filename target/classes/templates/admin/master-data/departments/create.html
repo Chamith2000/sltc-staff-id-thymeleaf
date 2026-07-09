@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Create Department</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <!-- Display Error Message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2>Create Department</h2>
+            <p class="text-muted">Add a new department to the system.</p>
+        </div>
+        <div class="col-6 text-right">
+            <a th:href="@{/admin/master-data/departments/list}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Department List
+            </a>
+        </div>
+    </div>
+
+    <!-- Create Department Form -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Department Information</h4>
+                    <form th:action="@{/admin/master-data/departments/save}" th:object="${departmentDTO}" method="post">
+                        
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-3 col-form-label">Name *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                <small class="form-text text-muted">Internal department name (e.g., COMP_SCI)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="displayName" class="col-sm-3 col-form-label">Display Name *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="displayName" th:field="*{displayName}" required>
+                                <small class="form-text text-muted">User-friendly department name (e.g., Computer Science)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="staffType" class="col-sm-3 col-form-label">Staff Type</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="staffType" th:field="*{staffType.id}">
+                                    <option value="">Select Staff Type</option>
+                                    <option th:each="staffType : ${staffTypes}"
+                                            th:value="${staffType.id}"
+                                            th:text="${staffType.typeName}"></option>
+                                </select>
+                                <small class="form-text text-muted">Optional: Associate this department with a staff type</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="faculty" class="col-sm-3 col-form-label">Faculty</label>
+                            <div class="col-sm-9">
+                                <select class="form-control" id="faculty" th:field="*{faculty.id}">
+                                    <option value="">Select Faculty</option>
+                                    <option th:each="faculty : ${faculties}"
+                                            th:value="${faculty.id}"
+                                            th:text="${faculty.displayName}"></option>
+                                </select>
+                                <small class="form-text text-muted">Optional: Associate this department with a faculty</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Department
+                                </button>
+                                <a th:href="@{/admin/master-data/departments/list}" class="btn btn-secondary ml-2">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

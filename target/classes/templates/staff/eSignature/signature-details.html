@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>E-Signature</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <!-- Top Bar -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2>E-Signature Details</h2>
+            <p class="text-muted">View and download employee digital signature.</p>
+        </div>
+        <div class="col-6 text-right">
+            <button type="button" class="btn btn-success" th:data-employee-id="${employee.id}" onclick="downloadSignatureAsPNG()">
+                <i class="mdi mdi-download"></i> Download PNG
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="goBack()">
+                <i class="mdi mdi-arrow-left"></i> Back
+            </button>
+        </div>
+    </div>
+    <!-- Main Content - Two Column Layout -->
+    <div class="row">
+        <!-- Left Side - Employee Information -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">Employee Information</h4>
+                    <div class="form-group row">
+                        <label class="col-sm-5 col-form-label"><strong>Full Name:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${employee.printedName}">John Doe</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-5 col-form-label"><strong>Employee No:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${employee.empNo}">EMP001</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-5 col-form-label"><strong>Designation:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${employee.designation}">Software Engineer</p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-5 col-form-label"><strong>Department:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${employee.departmentDisplayName}">Information Technology</p>
+                        </div>
+                    </div>
+                    <div class="form-group row" th:if="${employee.issueDate}">
+                        <label class="col-sm-5 col-form-label"><strong>Issue Date:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${#dates.format(employee.issueDate, 'dd MMMM yyyy')}">01 January 2024</p>
+                        </div>
+                    </div>
+                    <div class="form-group row" th:if="${employee.faculty}">
+                        <label class="col-sm-5 col-form-label"><strong>Faculty:</strong></label>
+                        <div class="col-sm-7">
+                            <p class="form-control-plaintext" th:text="${employee.faculty}">Engineering</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Digital Signature -->
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-body" style="background: #f2f8f9">
+                    <h4 class="card-title mb-4">Digital Signature</h4>
+                    <!-- Signature Display - Full Width via Iframe -->
+                    <div class="signature-display-area">
+                        <div class="signature-container-full">
+                            <iframe id="signatureFrame"
+                                    th:src="@{/staff/generate-eSignature/{id}(id=${employee.id})}"
+                                    width="100%"
+                                    height="400px"
+                                    frameborder="0">
+                                <p>Your browser does not support iframes. Please <a th:href="@{/staff/generate-eSignature/{id}(id=${employee.id})}">click here</a> to view the signature.</p>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function downloadSignatureAsPNG() {
+            console.log('Download button clicked');
+            
+            // Prevent any default action
+            event.preventDefault();
+            
+            // Get employee ID from URL or page data
+            const employeeId = getEmployeeIdFromPage();
+            console.log('Employee ID extracted:', employeeId);
+
+            if (!employeeId) {
+                alert('Employee ID not found. Current URL: ' + window.location.pathname);
+                return;
+            }
+
+            const downloadBtn = document.querySelector('.btn-success');
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            downloadBtn.disabled = true;
+
+            // Call server-side PNG generation using Puppeteer
+            console.log('Making API call to:', `/api/png-generation/generate-signature/${employeeId}`);
+            
+            fetch(`/api/png-generation/generate-signature/${employeeId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'same-origin' // Include cookies for authentication
+            })
+                .then(response => {
+                    if (response.status === 302 || response.redirected) {
+                        throw new Error('Authentication required - redirected to login');
+                    }
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        console.log('PNG generated successfully:', data.filePath);
+
+                        // Download the generated PNG
+                        const downloadUrl = data.downloadUrl || `/api/png-generation/download/${employeeId}`;
+                        downloadPngFile(downloadUrl);
+
+                    } else {
+                        console.error('PNG generation failed:', data.message);
+                        alert('PNG generation failed: ' + data.message);
+                        // No fallback - show error to user
+                    }
+                })
+                .catch(error => {
+                    console.error('Error generating PNG:', error);
+                    alert('Server PNG generation failed: ' + error.message);
+                    // No fallback - show error to user
+                })
+                .finally(() => {
+                    // Reset button
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                });
+        }
+
+        function getEmployeeIdFromPage() {
+            // Try to get employee ID from button data attribute
+            const downloadBtn = document.querySelector('.btn-success');
+            if (downloadBtn && downloadBtn.dataset.employeeId) {
+                console.log('Employee ID found from button data attribute:', downloadBtn.dataset.employeeId);
+                return downloadBtn.dataset.employeeId;
+            }
+            
+            // Try to get employee ID from URL path
+            const pathMatch = window.location.pathname.match(/\/signature-details\/(\d+)/);
+            if (pathMatch) {
+                console.log('Employee ID found from URL path:', pathMatch[1]);
+                return pathMatch[1];
+            }
+
+            // Try to get from data attribute if available
+            const signatureCard = document.getElementById('signatureCard');
+            if (signatureCard && signatureCard.dataset.employeeId) {
+                console.log('Employee ID found from signature card:', signatureCard.dataset.employeeId);
+                return signatureCard.dataset.employeeId;
+            }
+
+            // Try to get from hidden input or meta tag
+            const hiddenInput = document.querySelector('input[name="employeeId"]');
+            if (hiddenInput) {
+                console.log('Employee ID found from hidden input:', hiddenInput.value);
+                return hiddenInput.value;
+            }
+
+            // If all else fails, return null
+            console.warn('Could not determine employee ID from page');
+            return null;
+        }
+
+        function downloadPngFile(downloadUrl) {
+            console.log('Attempting to download from URL:', downloadUrl);
+            
+            // Create a temporary link and trigger download
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = ''; // Force download instead of navigation
+            link.style.display = 'none';
+            link.target = '_blank'; // Open in new tab as fallback
+
+            document.body.appendChild(link);
+            
+            // Add event listeners to handle success/failure
+            link.addEventListener('click', function() {
+                console.log('Download link clicked');
+            });
+            
+            try {
+                link.click();
+                console.log('PNG download initiated successfully');
+            } catch (error) {
+                console.error('Error triggering download:', error);
+                // Fallback: try to open in new window
+                window.open(downloadUrl, '_blank');
+            }
+            
+            // Clean up after a short delay
+            setTimeout(() => {
+                document.body.removeChild(link);
+            }, 1000);
+        }
+
+        function goBack() {
+            // Try to go back in browser history
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Fallback to a specific page if no history
+                window.location.href = '/staff/employee-list';
+            }
+        }
+
+    </script>
+
+</section>
+</body>
+</html>

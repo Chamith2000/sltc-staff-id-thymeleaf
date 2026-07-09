@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SLTC Staff Digital Signature</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/print-e-signature.css}" media="all">
+</head>
+<body>
+
+<div class="id-card-container" id="signatureContainer">
+    <div th:each="employee : ${employees.content}">
+        <div class="id-card" id="signatureCard">
+            <div class="content">
+                <div class="watermark"></div>
+                <div class="details">
+                    <h1 class="employee-name"
+                        style="max-width: 585px; font-family: 'Lexend', sans-serif; font-size: 27pt; font-weight: 900; margin-left: -2px;">
+                        <span class="first-name" th:text="${employee.firstName}">FirstName</span>
+                        <span class="highlight-color" th:text="${employee.lastName}">LastName</span>
+                    </h1>
+
+                    <h2 style="max-width: 470px; font-family: 'Lexend', sans-serif; font-size: 12pt; font-weight: 300;">
+                        <span th:text="${employee.qualification}"></span>
+                    </h2>
+                    <h2 th:style="${#strings.length(employee.designation) > 100 ? 'max-width: 673px; font-family: Lexend, sans-serif; font-size: 6pt; padding-top: 20px; font-weight: 300; text-transform: uppercase;' : (#strings.length(employee.designation) > 35 ? 'max-width: 673px; font-family: Lexend, sans-serif; font-size: 8pt; padding-top: 20px; font-weight: 300; text-transform: uppercase;' : 'max-width: 673px; font-family: Lexend, sans-serif; font-size: 14pt; padding-top: 10px; font-weight: 300; text-transform: uppercase;')}">
+                        <span th:text="${employee.designation}"></span>
+                    </h2>
+                    <h2 class="highlight-color"
+                        style="max-width: 673px; font-family: 'Lexend', sans-serif; font-size: 14pt; font-weight: 300; text-transform: uppercase;">
+                        <span th:text="${employee.departmentDisplayName}"></span>
+                    </h2>
+                </div>
+            </div>
+            <div class="bottom-section">
+                <div class="details">
+                    <div class="campus-info">
+                        <h2 style="max-width: 673px; font-family: 'Lexend', sans-serif; font-size: 14pt; font-weight: 300;">
+                            <span th:text="${employee.phoneNumber}"></span>
+                        </h2>
+                        <h2 style="max-width: 673px; font-family: 'Lexend', sans-serif; font-size: 14pt; font-weight: 300; text-transform: lowercase;">
+                            <span th:text="${employee.email}"></span>
+                        </h2>
+                        <div class="photo">
+                            <img th:src="${employee.filePath} ?: '/images/staff-id/default-avatar.jpg'" alt="Staff Photo">
+                        </div>
+                        <div class="photo" style="width: 9mm; height: 9mm; left: 59%; top: 37%;">
+                            <img src="/images/dot.png" alt="Staff Photo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

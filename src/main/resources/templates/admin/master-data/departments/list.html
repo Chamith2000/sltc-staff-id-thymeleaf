@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Department List</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <!-- Display Success Message -->
+    <div th:if="${success}" class="alert alert-success">
+        <p th:text="${success}"></p>
+    </div>
+
+    <!-- Display Error Message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2>Departments</h2>
+            <p class="text-muted">Manage department information and assignments.</p>
+        </div>
+        <div class="col-6 text-right">
+            <a th:href="@{/admin/master-data}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Master Data
+            </a>
+            <a th:href="@{/admin/master-data/departments/create}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Department
+            </a>
+        </div>
+    </div>
+
+    <!-- Department Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Department List</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Display Name</th>
+                                <th>Staff Type</th>
+                                <th>Faculty</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="department, iterStat : ${departments}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${department.name}"></td>
+                                <td th:text="${department.displayName}"></td>
+                                <td th:text="${department.staffType != null ? department.staffType.typeName : 'N/A'}"></td>
+                                <td th:text="${department.faculty != null ? department.faculty.displayName : 'N/A'}"></td>
+                                <td>
+                                    <a th:href="@{/admin/master-data/departments/edit/{id}(id=${department.id})}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form th:action="@{/admin/master-data/departments/delete/{id}(id=${department.id})}" 
+                                          method="post" style="display: inline;" 
+                                          onsubmit="return confirm('Are you sure you want to delete this department?')">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(departments)}">
+                                <td colspan="6" class="text-center">No departments found.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

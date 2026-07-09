@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Create Staff Type</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <!-- Display Error Message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2>Create Staff Type</h2>
+            <p class="text-muted">Add a new staff type to the system.</p>
+        </div>
+        <div class="col-6 text-right">
+            <a th:href="@{/admin/master-data/staff-types}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Staff Type List
+            </a>
+        </div>
+    </div>
+
+    <!-- Create Staff Type Form -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Staff Type Information</h4>
+                    <form th:action="@{/admin/master-data/staff-types/save}" th:object="${staffTypeDTO}" method="post">
+                        
+                        <div class="form-group row">
+                            <label for="typeName" class="col-sm-3 col-form-label">Type Name *</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="typeName" th:field="*{typeName}" required>
+                                <small class="form-text text-muted">Staff type name (e.g., Academic, Administrative, Support)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="description" class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                                <small class="form-text text-muted">Optional: Description of this staff type</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-9 offset-sm-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Save Staff Type
+                                </button>
+                                <a th:href="@{/admin/master-data/staff-types}" class="btn btn-secondary ml-2">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

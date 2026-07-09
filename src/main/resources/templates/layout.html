@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="_csrf" content="${_csrf.token}" />
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
+    <title>Star Admin</title>
+    <link rel="stylesheet" th:href="@{/vendors/iconfonts/mdi/css/materialdesignicons.min.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.addons.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" />
+</head>
+
+<body>
+<div class="container-scroller">
+    <!-- partial:partials/_navbar.html -->
+    <nav class="navbar default-layout col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+        <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
+            <a class="navbar-brand brand-logo" href="/">
+                <img th:src="@{/images/logo-technology-campus-2.png}" alt="logo" />
+            </a>
+            <a class="navbar-brand brand-logo-mini" href="/">
+                <img th:src="@{/images/logo-mini.webp}" alt="logo" />
+            </a>
+        </div>
+        <div class="navbar-menu-wrapper d-flex align-items-center">
+            <button class="navbar-toggler navbar-toggler d-none d-lg-block navbar-dark align-self-center mr-3" type="button" data-toggle="minimize">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <ul class="navbar-nav navbar-nav-right">
+                <li class="nav-item dropdown d-xl-inline-block">
+                    <a class="nav-link dropdown-toggle" id="UserDropdown" href="#" data-toggle="dropdown" aria-expanded="false">
+                        <span class="profile-text" th:text="'Hello, ' + ${loggedInUser.fullName} + ' | ' + ${loggedInUser.role}"></span>
+                        <img class="img-xs rounded-circle" th:src="@{/images/faces/face1.jpg}" alt="Profile image">
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="UserDropdown">
+                        <form th:action="@{/logout}" method="post" style="margin: 0; padding: 0; display: inline;">
+                            <button type="submit" class="dropdown-item btn btn-link text-left" style="color: inherit; text-decoration: none;">Sign Out</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+            <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center navbar-dark" type="button" data-toggle="offcanvas">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+            <ul class="nav">
+                <!-- Dashboard -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/}">
+                        <i class="menu-icon mdi mdi-view-dashboard"></i>
+                        <span class="menu-title">Home</span>
+                    </a>
+                </li>
+                
+                <!-- Print Management -->
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="collapse" href="#print-management" aria-expanded="false" aria-controls="print-management">
+                        <i class="menu-icon mdi mdi-printer"></i>
+                        <span class="menu-title">Print</span>
+                        <i class="menu-arrow"></i>
+                    </a>
+                    <div class="collapse" id="print-management">
+                        <ul class="nav flex-column sub-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/print/printed-list}">Printed List</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" th:href="@{/print/pending-list}">Pending List</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- partial -->
+        <div class="main-panel">
+            <div class="content-wrapper" layout:fragment="content">
+                Content is Here!
+            </div>
+            <!-- content-wrapper ends -->
+
+            <!-- partial:partials/_footer.html -->
+            <footer class="yellow-line">
+                <div class="container-fluid clearfix">
+            <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © 2025
+              <a href="https://sltc.ac.lk/" target="_blank">SLTC</a>. All rights reserved.</span>
+                </div>
+            </footer>
+            <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+</div>
+<!-- container-scroller -->
+
+<!-- plugins:js -->
+<script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+<!--<script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>-->
+<script th:src="@{/js/off-canvas.js}"></script>
+<script th:src="@{/js/misc.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Add your custom scripts here
+    });
+</script>
+
+</body>
+</html>

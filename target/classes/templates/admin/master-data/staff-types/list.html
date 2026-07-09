@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Staff Type List</title>
+</head>
+<body>
+<section layout:fragment="content">
+
+    <!-- Display Success Message -->
+    <div th:if="${success}" class="alert alert-success">
+        <p th:text="${success}"></p>
+    </div>
+
+    <!-- Display Error Message -->
+    <div th:if="${error}" class="alert alert-danger">
+        <p th:text="${error}"></p>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="row mb-4">
+        <div class="col-6">
+            <h2>Staff Types</h2>
+            <p class="text-muted">Manage different types of staff categories and classifications.</p>
+        </div>
+        <div class="col-6 text-right">
+            <a th:href="@{/admin/master-data}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Master Data
+            </a>
+            <a th:href="@{/admin/master-data/staff-types/create}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Staff Type
+            </a>
+        </div>
+    </div>
+
+    <!-- Staff Type Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Staff Type List</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Type Name</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="staffType, iterStat : ${staffTypes}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${staffType.typeName}"></td>
+                                <td th:text="${staffType.description ?: 'N/A'}"></td>
+                                <td>
+                                    <a th:href="@{/admin/master-data/staff-types/edit/{id}(id=${staffType.id})}" 
+                                       class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form th:action="@{/admin/master-data/staff-types/delete/{id}(id=${staffType.id})}" 
+                                          method="post" style="display: inline;" 
+                                          onsubmit="return confirm('Are you sure you want to delete this staff type?')">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(staffTypes)}">
+                                <td colspan="4" class="text-center">No staff types found.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

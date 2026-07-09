@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login - Staff ID Generate</title>
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.base.css}">
+    <link rel="stylesheet" th:href="@{/vendors/css/vendor.bundle.addons.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}" />
+    <style>
+        .vh-100 {
+            height: 100vh !important;
+        }
+        .logo img {
+            max-width: 200px;
+        }
+        .app-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .app-description {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+<div class="container d-flex align-items-center justify-content-center vh-100">
+    <div class="col-md-6">
+        <!-- Company Logo -->
+        <div class="text-center mb-4">
+            <div class="logo">
+                <img th:src="@{/images/logo-technology-campus.png}" alt="Company Logo" class="img-fluid">
+            </div>
+            <div class="app-name">Staff ID</div>
+            <div class="app-description">Seamlessly enroll and manage student information with ease.</div>
+        </div>
+         Alerts
+        <div th:if="${param.error}" class="alert alert-danger text-center">
+            <div th:if="${param.error[0] != null and param.error[0] != ''}" th:utext="${param.error[0]}"></div>
+            <div th:if="${param.error[0] == null or param.error[0] == ''}" th:text="'Invalid email or password. Please try again.'"></div>
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success text-center">
+            You have successfully logged out.
+        </div>
+        <!-- Login Card -->
+        <div class="card shadow-sm">
+            <div class="card-header text-center bg-primary text-white">
+                <h3>Login</h3>
+            </div>
+            <div class="card-body">
+                <!-- Display Error Message -->
+                <div th:if="${error}" class="alert alert-danger">
+                    <p th:text="${error}"></p>
+                </div>
+
+                <!-- Display Success Message -->
+                <div th:if="${success}" class="alert alert-success">
+                    <p th:text="${success}"></p>
+                </div>
+
+                <form method="post" th:action="@{/do-login}" th:object="${userAuth}">
+                    <div class="form-group mb-3">
+                        <label for="username" class="form-label">Email</label>
+                        <input type="text" id="username" th:field="*{username}" class="form-control" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="mb-1">
+                            <a href="/auth/forgot-password" class="text-warning">Forgot your password?</a>
+                        </p>
+                        <p class="mb-0">Don't have an account? 
+                            <a href="/auth/signup" class="text-success">Sign up here</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                <small class="text-muted">© 2025 SLTC Technology Campus</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script th:src="@{/vendors/js/vendor.bundle.base.js}"></script>
+<script th:src="@{/vendors/js/vendor.bundle.addons.js}"></script>
+<script th:src="@{/js/off-canvas.js}"></script>
+<script th:src="@{/js/misc.js}"></script>
+</body>
+</html>
