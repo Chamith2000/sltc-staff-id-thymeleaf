@@ -17,10 +17,29 @@
                 <img th:src="${employee.filePath} ?: '/images/employee-id/default-avatar.jpg'" alt="Staff Photo">
             </div>
 
+            <!--
+              Font size for name/designation is picked server-side from the text
+              length (no JS). This has to be deterministic because the printing
+              flow calls iframe.contentWindow.print() the instant the iframe
+              finishes loading -- there's no reliable window to run a client-side
+              "shrink to fit" script before that happens.
+            -->
             <div class="info-block">
-                <div class="name-text" th:text="${employee.printedName}">Name</div>
-                <div class="designation-text" th:text="${employee.designation}">Designation</div>
-                <div class="department-text" th:text="${employee.departmentDisplayName}">Department</div>
+                <div class="name-text"
+                     th:text="${employee.printedName}"
+                     th:classappend="${#strings.length(employee.printedName) > 28} ? 'text-tiny' : (${#strings.length(employee.printedName) > 20} ? 'text-small' : '')">
+                    Name
+                </div>
+                <div class="designation-text"
+                     th:text="${employee.designation}"
+                     th:classappend="${#strings.length(employee.designation) > 55} ? 'text-tiny' : (${#strings.length(employee.designation) > 36} ? 'text-small' : '')">
+                    Designation
+                </div>
+                <div class="department-text"
+                     th:text="${employee.departmentDisplayName}"
+                     th:classappend="${#strings.length(employee.departmentDisplayName) > 50} ? 'text-tiny' : ''">
+                    Department
+                </div>
             </div>
 
             <div class="issue-date-text">
@@ -39,51 +58,5 @@
 
     </div>
 </div>
-
-<!--
-  Long names / designations don't all fit at one fixed font-size, so instead of
-  guessing a size that breaks on longer text, we measure each line in the
-  browser and shrink it (in small steps) until it actually fits the card width.
-  Runs once per card after fonts/layout are ready.
--->
-<script th:inline="none">
-    (function () {
-        // Shrinks font-size in small steps until the (single-line) text fits.
-        // If it still doesn't fit once we hit the minimum readable size, we
-        // fall back to letting it wrap onto a second line at that size,
-        // rather than keep shrinking into unreadably tiny text.
-        function shrinkToFit(el, minPx) {
-            if (!el) return;
-            var floor = minPx || 8;
-            var size = parseFloat(window.getComputedStyle(el).fontSize);
-            var guard = 0;
-            while (el.scrollWidth > el.clientWidth && size > floor && guard < 40) {
-                size -= 0.5;
-                el.style.fontSize = size + 'px';
-                guard++;
-            }
-            if (el.scrollWidth > el.clientWidth) {
-                el.style.whiteSpace = 'normal';
-                el.style.textOverflow = 'clip';
-                el.style.wordBreak = 'break-word';
-            }
-        }
-
-        function fitAllCards() {
-            document.querySelectorAll('.id-card.front-card').forEach(function (card) {
-                shrinkToFit(card.querySelector('.name-text'), 9);
-                shrinkToFit(card.querySelector('.designation-text'), 6.5);
-            });
-        }
-
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(fitAllCards).catch(fitAllCards);
-        } else {
-            fitAllCards();
-        }
-        // Safety net in case fonts resolve before layout has settled
-        window.addEventListener('load', fitAllCards);
-    })();
-</script>
 </body>
 </html>
