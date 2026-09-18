@@ -138,10 +138,11 @@ body {
   font-weight: 900;
   font-size: 13pt;
   line-height: 1.15;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
 }
+
+.name-text.text-small { font-size: 10.5pt; }
+.name-text.text-tiny   { font-size: 9pt; }
 
 .designation-text {
   width: 100%;
@@ -151,12 +152,13 @@ body {
   color: #ffffff;
   font-family: 'MuseoSans', sans-serif;
   font-weight: 500;
-  font-size: 7pt;
+  font-size: 7.5pt;
   line-height: 1.2;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  word-break: break-word;
 }
+
+.designation-text.text-small { font-size: 6.5pt; }
+.designation-text.text-tiny   { font-size: 5.6pt; }
 
 .department-text {
   width: 100%;
@@ -169,9 +171,11 @@ body {
   font-style: italic;
   font-size: 6.2pt;
   line-height: 1.25;
-  max-height: 8.5mm;
+  max-height: 9mm;
   overflow: hidden;
 }
+
+.department-text.text-tiny { font-size: 5.4pt; }
 
 .issue-date-text {
   position: absolute;
